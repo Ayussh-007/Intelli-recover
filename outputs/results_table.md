@@ -8,7 +8,7 @@ Comparison of baseline **StaticPID**, intermediate **AdaptivePID**, and full **I
 | Lateral Deviation (mm) | <= 5 | 2.4 +/- 0.01 | 2.5 +/- 0.01 | 2.5 +/- 0.01 | **PASS** |
 | Static Obstacle Recovery Time (ms) | <= 900 | Failed / DNF | Failed / DNF | 884.0 +/- 6.63 | **PASS** |
 | Line Discontinuity Recovery (<=20 cm gap) (ms) | <= 1300 | 670.0 +/- 0.00 | 670.0 +/- 0.00 | 670.0 +/- 0.00 | **PASS** |
-| Sensing-to-Actuation Latency (ms) | <= 60 | 14.5 +/- 0.00 | 14.6 +/- 0.00 | 14.6 +/- 0.00 | **PASS** |
+| Sensing-to-Actuation Latency (ms) | <= 60 | 14.6 +/- 0.00 | 14.6 +/- 0.01 | 14.6 +/- 0.01 | **PASS** |
 | Settling Time (90-degree turn) (ms) | <= 600 | 352.0 +/- 6.00 | 348.0 +/- 6.00 | 348.0 +/- 6.00 | **PASS** |
 | Illumination Tolerance Range (lux) | 50-1000 | 400 - 620 | 50 - 1000 | 50 - 1000 | **PASS** |
 | Re-entry Overshoot after Obstacle (deg) | <= 5 | 18.5 +/- 0.00 | 15.4 +/- 0.00 | 4.9 +/- 0.12 | **PASS** |
