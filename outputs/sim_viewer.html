@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Intelli Recover — Real-Time Simulation & Animation Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-primary: #0a0e17;
+      --bg-surface: #111827;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #06b6d4;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      --text-main: #f9fafb;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 20%, #0d1527 0%, var(--bg-primary) 90%);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: 60px;
+    }
+
+    header {
+      padding: 24px 36px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+    }
+
+    .brand h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .brand p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-emerald);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 28px auto;
+      padding: 0 24px;
+    }
+
+    /* Controls Bar */
+    .controls-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .tab-group {
+      display: flex;
+      gap: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 6px;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, #0284c7, #06b6d4);
+      box-shadow: 0 4px 15px rgba(6, 182, 212, 0.35);
+    }
+
+    .mode-switch {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-action {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-action.active {
+      background: linear-gradient(135deg, #10b981, #059669);
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    /* Stage Area */
+    .stage-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      margin-bottom: 28px;
+    }
+
+    .stage-header {
+      padding: 16px 24px;
+      background: rgba(0, 0, 0, 0.35);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .stage-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .stage-desc {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Comparison Grid */
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      padding: 24px;
+    }
+
+    .single-view {
+      grid-template-columns: 1fr;
+    }
+
+    .sim-card {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sim-card:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    .sim-card-header {
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .sim-card-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-static { color: #f87171; background: rgba(248, 113, 113, 0.15); border: 1px solid rgba(248, 113, 113, 0.3); padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+    .badge-adaptive { color: #fbbf24; background: rgba(251, 191, 36, 0.15); border: 1px solid rgba(251, 191, 36, 0.3); padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+    .badge-intelli { color: #34d399; background: rgba(52, 211, 153, 0.15); border: 1px solid rgba(52, 211, 153, 0.3); padding: 3px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+
+    .anim-viewport {
+      width: 100%;
+      height: 480px;
+      background: #000;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .anim-viewport img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .card-footer {
+      padding: 14px 18px;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Live Telemetry Bar */
+    .telemetry-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .metric-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .icon-acc { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); }
+    .icon-dev { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+    .icon-lat { background: rgba(245, 158, 11, 0.15); color: var(--accent-amber); }
+    .icon-bat { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+
+    .metric-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .metric-label {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--accent-emerald);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* Plot Gallery Carousel */
+    .plots-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 24px;
+    }
+
+    .plots-panel h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .plot-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .plot-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+
+    .plot-tab-btn.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .plot-display {
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+      background: #000;
+    }
+
+    .plot-display img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="m4.93 4.93 4.24 4.24"></path>
+          <path d="m14.83 9.17 4.24-4.24"></path>
+          <path d="m14.83 14.83 4.24 4.24"></path>
+          <path d="m9.17 14.83-4.24 4.24"></path>
+        </svg>
+      </div>
+      <div>
+        <h1>Intelli Recover Simulation Studio</h1>
+        <p>Real-Time Kinematic Animation & Performance Benchmark</p>
+      </div>
+    </div>
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      SIMULATION COMPLETED &bull; ALL TARGETS PASS
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Telemetry Metric Cards -->
+    <div class="telemetry-row">
+      <div class="metric-card">
+        <div class="metric-icon icon-acc">🎯</div>
+        <div>
+          <div class="metric-val">98.5%</div>
+          <div class="metric-label">Tracking Accuracy</div>
+          <div class="metric-sub">Target &ge; 90% (PASS)</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon icon-dev">📏</div>
+        <div>
+          <div class="metric-val">2.5 mm</div>
+          <div class="metric-label">Lateral Deviation</div>
+          <div class="metric-sub">Target &le; 5.0 mm (PASS)</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon icon-lat">⚡</div>
+        <div>
+          <div class="metric-val">14.6 ms</div>
+          <div class="metric-label">Control Latency</div>
+          <div class="metric-sub">Target &le; 60 ms (PASS)</div>
+        </div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon icon-bat">🔋</div>
+        <div>
+          <div class="metric-val">119.1 min</div>
+          <div class="metric-label">Battery Autonomy</div>
+          <div class="metric-sub">Target &ge; 90 min (PASS)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls Panel -->
+    <div class="controls-panel">
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase;">
+          Select Experiment Scenario
+        </div>
+        <div class="tab-group" id="scenarioTabs">
+          <button class="tab-btn active" onclick="setScenario('S1')">S1: Normal Track (90° Corner)</button>
+          <button class="tab-btn" onclick="setScenario('S2')">S2: Lighting Change (80-900 lx)</button>
+          <button class="tab-btn" onclick="setScenario('S3')">S3: Line Gap & Obstacle</button>
+        </div>
+      </div>
+
+      <div class="mode-switch">
+        <button class="btn-action active" id="btnSideBySide" onclick="toggleLayout('side')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+          3-Way Side-by-Side
+        </button>
+        <button class="btn-action" id="btnFocusIntelli" onclick="toggleLayout('single')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="3"/></svg>
+          Focus IntelliRecover
+        </button>
+      </div>
+    </div>
+
+    <!-- Animation Stage -->
+    <div class="stage-card">
+      <div class="stage-header">
+        <div>
+          <div class="stage-title" id="stageTitle">
+            <span>Scenario 1: Normal Track with Sharp 90-Degree Corner</span>
+          </div>
+          <div class="stage-desc" id="stageDesc">
+            Constant 500 lux illumination. Comparing trajectory settling and tight cornering across all three controllers.
+          </div>
+        </div>
+        <button class="btn-action" onclick="restartAnimations()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Restart Animations
+        </button>
+      </div>
+
+      <!-- Simulation Grid -->
+      <div class="sim-grid" id="simGrid">
+        <!-- StaticPID Card -->
+        <div class="sim-card" id="cardStatic">
+          <div class="sim-card-header">
+            <div class="sim-card-title">
+              <span>StaticPID</span>
+              <span class="badge-static">BASELINE</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #f87171;">Fixed Gains & Thresh</div>
+          </div>
+          <div class="anim-viewport">
+            <img id="imgStatic" src="./animations/S1_StaticPID.gif" alt="StaticPID Simulation">
+          </div>
+          <div class="card-footer">
+            <span>Threshold: Fixed (500)</span>
+            <span>Recovery: None</span>
+          </div>
+        </div>
+
+        <!-- AdaptivePID Card -->
+        <div class="sim-card" id="cardAdaptive">
+          <div class="sim-card-header">
+            <div class="sim-card-title">
+              <span>AdaptivePID</span>
+              <span class="badge-adaptive">INTERMEDIATE</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #fbbf24;">ADTSF + HFPID</div>
+          </div>
+          <div class="anim-viewport">
+            <img id="imgAdaptive" src="./animations/S1_AdaptivePID.gif" alt="AdaptivePID Simulation">
+          </div>
+          <div class="card-footer">
+            <span>Threshold: Dynamic (ADTSF)</span>
+            <span>Gains: Fuzzy Tuned</span>
+          </div>
+        </div>
+
+        <!-- IntelliRecover Card -->
+        <div class="sim-card" id="cardIntelli">
+          <div class="sim-card-header">
+            <div class="sim-card-title">
+              <span>IntelliRecover</span>
+              <span class="badge-intelli">PROPOSED FULL</span>
+            </div>
+            <div style="font-size: 0.8rem; color: #34d399;">ADTSF + HFPID + PPDR</div>
+          </div>
+          <div class="anim-viewport">
+            <img id="imgIntelli" src="./animations/S1_IntelliRecover.gif" alt="IntelliRecover Simulation">
+          </div>
+          <div class="card-footer">
+            <span>Recovery: PPDR Active</span>
+            <span>Damped Re-entry: &le; 5°</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagnostic Plot Showcase -->
+    <div class="plots-panel">
+      <h2>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        Diagnostic Analysis & Metric Telemetry
+      </h2>
+      <div class="plot-tabs">
+        <button class="plot-tab-btn active" onclick="setPlot('table5_metrics_comparison.png', this)">Table 5 Metrics Bar Chart</button>
+        <button class="plot-tab-btn" onclick="setPlot('lateral_error_vs_time.png', this)">Lateral Error vs Time</button>
+        <button class="plot-tab-btn" onclick="setPlot('lighting_adaptation_s2.png', this)">S2 Lighting & Threshold Tracking</button>
+        <button class="plot-tab-btn" onclick="setPlot('gap_recovery_s3.png', this)">S3 Discontinuity & Gap Recovery</button>
+        <button class="plot-tab-btn" onclick="setPlot('gain_adaptation.png', this)">HFPID Fuzzy Gain Adaptation</button>
+      </div>
+      <div class="plot-display">
+        <img id="plotImg" src="./plots/table5_metrics_comparison.png" alt="Diagnostic Chart">
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let currentScenario = 'S1';
+    let currentLayout = 'side';
+
+    const scenarioMeta = {
+      'S1': {
+        title: 'Scenario 1: Normal Track with Sharp 90-Degree Corner',
+        desc: 'Constant 500 lux illumination. Comparing trajectory settling and tight cornering across all three controllers.'
+      },
+      'S2': {
+        title: 'Scenario 2: Dynamic Lighting Shift (500 -> 80 lx step, ramp to 900 lx)',
+        desc: 'StaticPID fails completely under low light (80 lx) and high glare (900 lx), while ADTSF dynamically tracks the threshold.'
+      },
+      'S3': {
+        title: 'Scenario 3: Line Discontinuity (20 cm Gap) & Static Obstacle Encounter',
+        desc: 'PPDR locks dead-reckoning heading across the 20 cm gap, followed by autonomous obstacle circumvention and damped re-entry.'
+      }
+    };
+
+    function setScenario(sc) {
+      currentScenario = sc;
+      document.querySelectorAll('#scenarioTabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('stageTitle').innerHTML = `<span>${scenarioMeta[sc].title}</span>`;
+      document.getElementById('stageDesc').innerText = scenarioMeta[sc].desc;
+
+      const cacheBust = `?t=${Date.now()}`;
+      document.getElementById('imgStatic').src = `./animations/${sc}_StaticPID.gif${cacheBust}`;
+      document.getElementById('imgAdaptive').src = `./animations/${sc}_AdaptivePID.gif${cacheBust}`;
+      document.getElementById('imgIntelli').src = `./animations/${sc}_IntelliRecover.gif${cacheBust}`;
+    }
+
+    function toggleLayout(mode) {
+      currentLayout = mode;
+      const grid = document.getElementById('simGrid');
+      const btnSide = document.getElementById('btnSideBySide');
+      const btnFocus = document.getElementById('btnFocusIntelli');
+      const cardStatic = document.getElementById('cardStatic');
+      const cardAdaptive = document.getElementById('cardAdaptive');
+
+      if (mode === 'single') {
+        grid.classList.add('single-view');
+        cardStatic.style.display = 'none';
+        cardAdaptive.style.display = 'none';
+        btnFocus.classList.add('active');
+        btnSide.classList.remove('active');
+      } else {
+        grid.classList.remove('single-view');
+        cardStatic.style.display = 'flex';
+        cardAdaptive.style.display = 'flex';
+        btnSide.classList.add('active');
+        btnFocus.classList.remove('active');
+      }
+    }
+
+    function restartAnimations() {
+      const cacheBust = `?t=${Date.now()}`;
+      document.getElementById('imgStatic').src = `./animations/${currentScenario}_StaticPID.gif${cacheBust}`;
+      document.getElementById('imgAdaptive').src = `./animations/${currentScenario}_AdaptivePID.gif${cacheBust}`;
+      document.getElementById('imgIntelli').src = `./animations/${currentScenario}_IntelliRecover.gif${cacheBust}`;
+    }
+
+    function setPlot(filename, btn) {
+      document.querySelectorAll('.plot-tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('plotImg').src = `./plots/${filename}`;
+    }
+  </script>
+</body>
+</html>
